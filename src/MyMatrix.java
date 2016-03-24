@@ -26,7 +26,7 @@ public class MyMatrix {
         return modifiedMatrix;
     }
 
-    MyMatrix scalarMultiply(int k) {
+    MyMatrix scalarMultiply(float k) {
         MyMatrix modifiedMatrix = new MyMatrix(m, n);
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
@@ -100,6 +100,82 @@ public class MyMatrix {
 
         MyMatrix mat = new MyMatrix(x, y); //new arrays of float are automatically initialized with zeroes, so no need for looping again.
         return mat;
+    }
+
+    public void setValue(int row, int col, float x) {
+        this.matrix[row][col] = x;
+    }
+
+    public float getValue(int row, int col) {
+        return this.matrix[row][col];
+    }
+
+    public int getSign(int x) {
+        //get correct sign to use with value (input is row or column index)
+        if (x%2==0) {
+            return 1;
+        } else {
+            return -1;
+        }
+    }
+
+    public float det(MyMatrix mat) {
+        if (mat.n != mat.m) {
+            System.out.println("MyMatrix is not square");
+            return 0;
+        }
+
+        if (mat.matrix.length == 1) {
+            return mat.getValue(0, 0);
+        }
+        if (mat.matrix.length == 2) {
+            return (mat.getValue(0, 0) * mat.getValue(1, 1)) - (mat.getValue(0, 1) * mat.getValue(1, 0));
+        }
+        float sum = 0;
+        for (int i = 0; i < mat.n; i++) {
+            sum += getSign(i) * mat.getValue(0, i) * det(SubMatrix(mat, 0, i));
+        }
+        return sum;
+    }
+
+    public MyMatrix SubMatrix(MyMatrix OriginalMatrix, int row, int col) {
+        MyMatrix mat = new MyMatrix(OriginalMatrix.m - 1, OriginalMatrix.n - 1);
+        int r = -1;
+        for (int i = 0; i < OriginalMatrix.m; i++) {
+            if (i == row) {
+                continue;
+            }
+            r++;
+            int c = -1;
+            for (int j = 0; j < OriginalMatrix.n; j++) {
+                if (j == col) {
+                    continue;
+                }
+                mat.setValue(r, ++c, OriginalMatrix.getValue(i, j));
+            }
+        }
+        return mat;
+    }
+
+    public MyMatrix cofactor(MyMatrix OriginalMatrix) {
+        MyMatrix mat = new MyMatrix(OriginalMatrix.m, OriginalMatrix.n);
+        for (int i = 0; i < OriginalMatrix.m; i++) {
+            for (int j = 0; j < OriginalMatrix.n; j++) {
+                mat.setValue(i, j, getSign(i) * getSign(j) * det(SubMatrix(OriginalMatrix, i, j)));
+            }
+        }
+
+        return mat;
+    }
+
+    public MyMatrix inverse() {
+        
+        if (det(this)!=0) return (cofactor(this).transpose().scalarMultiply(1/det(this)));
+        else {
+            System.out.println("Matrix couldn't be inverted");
+            return zeroMatrix(m, n);
+        }
+      
     }
 
     public void display() {

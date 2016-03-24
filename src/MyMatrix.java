@@ -6,20 +6,21 @@ import java.util.Arrays;
  */
 public class MyMatrix {
 
-    int m = 0, n = 0;
+    private int rows = 0;
+    private int cols = 0;
     float[][] matrix;
 
     MyMatrix(int num1, int num2) {
-        m = num1;
-        n = num2;
-        matrix = new float[m][n];
+        rows = num1;
+        cols = num2;
+        matrix = new float[rows][cols];
 
     }
 
     public MyMatrix transpose() {
-        MyMatrix modifiedMatrix = new MyMatrix(n, m);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
+        MyMatrix modifiedMatrix = new MyMatrix(getCols(), getRows());
+        for (int i = 0; i < getCols(); i++) {
+            for (int j = 0; j < getRows(); j++) {
                 modifiedMatrix.matrix[i][j] = this.matrix[j][i];
             }
         }
@@ -27,9 +28,9 @@ public class MyMatrix {
     }
 
     MyMatrix scalarMultiply(float k) {
-        MyMatrix modifiedMatrix = new MyMatrix(m, n);
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
+        MyMatrix modifiedMatrix = new MyMatrix(getRows(), getCols());
+        for (int i = 0; i < getRows(); i++) {
+            for (int j = 0; j < getCols(); j++) {
                 modifiedMatrix.matrix[i][j] = k * matrix[i][j];
             }
         }
@@ -37,14 +38,14 @@ public class MyMatrix {
     }
 
     boolean validForSum(MyMatrix mat) {
-        return (this.m == mat.m && this.n == mat.n);
+        return (this.rows == mat.getRows() && this.cols == mat.getCols());
     }
 
     MyMatrix sum(MyMatrix mat) {
         if (validForSum(mat)) {
-            MyMatrix modifiedMatrix = new MyMatrix(m, n);
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j < n; j++) {
+            MyMatrix modifiedMatrix = new MyMatrix(getRows(), getCols());
+            for (int i = 0; i < getRows(); i++) {
+                for (int j = 0; j < getCols(); j++) {
                     modifiedMatrix.matrix[i][j] = this.matrix[i][j] + mat.matrix[i][j];
                 }
             }
@@ -72,7 +73,7 @@ public class MyMatrix {
     }
 
     boolean validForMultiplication(MyMatrix mat) {
-        return this.n == mat.m;
+        return this.cols == mat.getRows();
     }
 
     public void setValues(float[][] x) {
@@ -82,10 +83,10 @@ public class MyMatrix {
 
     MyMatrix multiply(MyMatrix mat) {
         if (this.validForMultiplication(mat)) {
-            MyMatrix modifiedMatrix = new MyMatrix(this.m, mat.n);
-            for (int i = 0; i < this.m; i++) {
-                for (int j = 0; j < mat.n; j++) {
-                    for (int k = 0; k < this.n; k++) {
+            MyMatrix modifiedMatrix = new MyMatrix(this.rows, mat.getCols());
+            for (int i = 0; i < this.rows; i++) {
+                for (int j = 0; j < mat.getCols(); j++) {
+                    for (int k = 0; k < this.cols; k++) {
                         modifiedMatrix.matrix[i][j] += this.matrix[i][k] * mat.matrix[k][j];
                     }
                 }
@@ -120,8 +121,8 @@ public class MyMatrix {
     }
 
     public float det(MyMatrix mat) {
-        if (mat.n != mat.m) {
-            System.out.println("MyMatrix is not square");
+        if (mat.getCols() != mat.getRows()) {
+            System.out.println("Matrix is not square");
             return 0;
         }
 
@@ -132,22 +133,22 @@ public class MyMatrix {
             return (mat.getValue(0, 0) * mat.getValue(1, 1)) - (mat.getValue(0, 1) * mat.getValue(1, 0));
         }
         float sum = 0;
-        for (int i = 0; i < mat.n; i++) {
+        for (int i = 0; i < mat.getCols(); i++) {
             sum += getSign(i) * mat.getValue(0, i) * det(SubMatrix(mat, 0, i));
         }
         return sum;
     }
 
     public MyMatrix SubMatrix(MyMatrix OriginalMatrix, int row, int col) {
-        MyMatrix mat = new MyMatrix(OriginalMatrix.m - 1, OriginalMatrix.n - 1);
+        MyMatrix mat = new MyMatrix(OriginalMatrix.getRows() - 1, OriginalMatrix.getCols() - 1);
         int r = -1;
-        for (int i = 0; i < OriginalMatrix.m; i++) {
+        for (int i = 0; i < OriginalMatrix.getRows(); i++) {
             if (i == row) {
                 continue;
             }
             r++;
             int c = -1;
-            for (int j = 0; j < OriginalMatrix.n; j++) {
+            for (int j = 0; j < OriginalMatrix.getCols(); j++) {
                 if (j == col) {
                     continue;
                 }
@@ -158,9 +159,9 @@ public class MyMatrix {
     }
 
     public MyMatrix cofactor(MyMatrix OriginalMatrix) {
-        MyMatrix mat = new MyMatrix(OriginalMatrix.m, OriginalMatrix.n);
-        for (int i = 0; i < OriginalMatrix.m; i++) {
-            for (int j = 0; j < OriginalMatrix.n; j++) {
+        MyMatrix mat = new MyMatrix(OriginalMatrix.getRows(), OriginalMatrix.getCols());
+        for (int i = 0; i < OriginalMatrix.getRows(); i++) {
+            for (int j = 0; j < OriginalMatrix.getCols(); j++) {
                 mat.setValue(i, j, getSign(i) * getSign(j) * det(SubMatrix(OriginalMatrix, i, j)));
             }
         }
@@ -173,20 +174,48 @@ public class MyMatrix {
         if (det(this)!=0) return (cofactor(this).transpose().scalarMultiply(1/det(this)));
         else {
             System.out.println("Matrix couldn't be inverted");
-            return zeroMatrix(m, n);
+            return zeroMatrix(getRows(), getCols());
         }
       
     }
 
     public void display() {
-        for (int i = 0; i < matrix.length; i++) {
+        for (float[] matrix1 : matrix) {
             System.out.print("{ ");
             for (int j = 0; j < matrix[0].length; j++) {
-                System.out.print(matrix[i][j] + " ");
+                System.out.print((float)Math.round(matrix1[j] * 1000d) / 1000d + " ");
             }
-            System.out.print("}");
-            System.out.print("\n");
+            System.out.println("}");
+           
         }
+    }
+
+    /**
+     * @return the rows
+     */
+    public int getRows() {
+        return rows;
+    }
+
+    /**
+     * sets number of rows 
+     */
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    /**
+     * @return the number of columns
+     */
+    public int getCols() {
+        return cols;
+    }
+
+    /**
+     * sets number of columns
+     */
+    public void setCols(int cols) {
+        this.cols = cols;
     }
 
 }

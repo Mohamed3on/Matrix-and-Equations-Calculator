@@ -20,11 +20,10 @@ public class Main {
             }
         }
         thematrix.setValues(array);
-//       MyMatrix inv= thematrix.inverse();
-//       inv.display();
-//        System.out.println("---------------------------------------");
-//        thematrix.multiply(inv).display();
-        System.out.println("det= "+thematrix.det(thematrix));
+       MyMatrix inv= thematrix.inverse();
+       inv.display();
+        System.out.println("---------------------------------------");
+        thematrix.multiply(inv).display();
 
     }
 }

@@ -20,10 +20,18 @@ public class Main {
             }
         }
         thematrix.setValues(array);
-       MyMatrix inv= thematrix.inverse();
-       inv.display();
-        System.out.println("---------------------------------------");
-        thematrix.multiply(inv).display();
+//       MyMatrix inv= thematrix.inverse();
+//       inv.display();
+//        System.out.println("---------------------------------------");
+//        thematrix.multiply(inv).display();
+        MyEquation x=new MyEquation(m);
+        x.systemofEquations=thematrix;
+        System.out.println("now enter RHS");
+        for (int i = 0; i < m; i++) {
+            x.RHS[i]=sc.nextFloat();
+        }
+         x.solveSystem();
+        
 
     }
 }

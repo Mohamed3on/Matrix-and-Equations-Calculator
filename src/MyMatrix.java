@@ -199,6 +199,7 @@ public class MyMatrix {
 
     /**
      * sets number of rows 
+     * @param rows
      */
     public void setRows(int rows) {
         this.rows = rows;
@@ -213,6 +214,7 @@ public class MyMatrix {
 
     /**
      * sets number of columns
+     * @param cols
      */
     public void setCols(int cols) {
         this.cols = cols;

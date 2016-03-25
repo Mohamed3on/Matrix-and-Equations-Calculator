@@ -113,7 +113,7 @@ public class MyMatrix {
 
     public int getSign(int x) {
         //get correct sign to use with value (input is row or column index)
-        if (x%2==0) {
+        if (x % 2 == 0) {
             return 1;
         } else {
             return -1;
@@ -152,7 +152,8 @@ public class MyMatrix {
                 if (j == col) {
                     continue;
                 }
-                mat.setValue(r, ++c, OriginalMatrix.getValue(i, j));
+                c++;
+                mat.setValue(r, c, OriginalMatrix.getValue(i, j));
             }
         }
         return mat;
@@ -162,7 +163,7 @@ public class MyMatrix {
         MyMatrix mat = new MyMatrix(OriginalMatrix.getRows(), OriginalMatrix.getCols());
         for (int i = 0; i < OriginalMatrix.getRows(); i++) {
             for (int j = 0; j < OriginalMatrix.getCols(); j++) {
-                mat.setValue(i, j, getSign(i) * getSign(j) * det(SubMatrix(OriginalMatrix, i, j)));
+                mat.setValue(i, j, (getSign(i) * getSign(j) * det(SubMatrix(OriginalMatrix, i, j))));
             }
         }
 
@@ -170,23 +171,24 @@ public class MyMatrix {
     }
 
     public MyMatrix inverse() {
-        
-        if (det(this)!=0) return (cofactor(this).transpose().scalarMultiply(1/det(this)));
-        else {
+
+        if (det(this) != 0) {
+            return (cofactor(this).transpose().scalarMultiply(1 / det(this)));
+        } else {
             System.out.println("Matrix couldn't be inverted");
             return zeroMatrix(getRows(), getCols());
         }
-      
+
     }
 
     public void display() {
         for (float[] matrix1 : matrix) {
             System.out.print("{ ");
             for (int j = 0; j < matrix[0].length; j++) {
-                System.out.print((float)Math.round(matrix1[j] * 1000d) / 1000d + " ");
+                System.out.print((float) Math.round(matrix1[j] * 1000d) / 1000d + " ");
             }
             System.out.println("}");
-           
+
         }
     }
 
@@ -198,7 +200,8 @@ public class MyMatrix {
     }
 
     /**
-     * sets number of rows 
+     * sets number of rows
+     *
      * @param rows
      */
     public void setRows(int rows) {
@@ -214,6 +217,7 @@ public class MyMatrix {
 
     /**
      * sets number of columns
+     *
      * @param cols
      */
     public void setCols(int cols) {
